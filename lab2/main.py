@@ -16,11 +16,10 @@ m – кількість об’єктів транзакцій (об’єкти
 
 def get_data() -> (int, int, list):
     ts = []
-    for i, line in enumerate(open("input.txt").readlines()):
+    for i, line in enumerate(open("./data/input.txt").readlines()):
         ts.append(list(map(int, line.split())))
     m = ts.pop(0)[0]
     k = ts.pop()[0]
-    print(m, k, ts)
     return m, k, ts
 
 
@@ -36,46 +35,71 @@ def get_combo(m: int, ts: list) -> list:
 
     used = []
     out = [x for x in out if x not in used and (used.append(x) or True)]
-    print(out)
     return out
+
+
+def count_combos(valid, ts):
+    counter = dict(zip(
+        [tuple(combo) for combo in valid],
+        [0]*len(valid)))
+    for combo in valid:
+        for transaction in ts:
+            if contains(transaction, combo):
+                counter[tuple(combo)] += 1
+    return counter
+
+
+def contains(where, what):
+    yes = True
+    for e in what:
+        yes = yes and (e in where)
+    return yes
+
+
+def filter_valid(bad, combos) -> list:
+    valid = []
+    for combo in combos:
+        ok = True
+        for b in bad:
+            ok = ok and not contains(what=b, where=combo)
+        if ok:
+            valid.append(combo)
+    return valid
+
+
+def save(out: dict):
+    f = open("./data/output.txt", "w")
+    for key, value in out.items():
+        f.write(f"{key} :  {value}\n")
+    f.close()
 
 
 def apriori(m: int, k: int, ts: list):
     out = dict()
     valid = [{e} for e in range(m)]
     while len(valid) != 0:
-        # count
-        for combo in valid:
-            for transaction in ts:
-                ok = True
-                for e in combo:
-                    ok = ok and (e in transaction)
-                print("{} in {} ? {}".format(combo, transaction, ok))
-                if ok:
-                    if tuple(combo) not in out:
-                        out[tuple(combo)] = 0
-                    out[tuple(combo)] += 1
+        counter = count_combos(valid, ts)
 
-        # remove if under threshold
-        very_valid = []
+        # add if only over threshold
+        good = []
+        bad = []
         for i in range(len(valid)):
             combo = valid[i]
-            print("{} count {}".format(combo, out[tuple(combo)]))
-            if out[tuple(combo)] < k:
-                out.pop(tuple(combo), None)
+            count = counter[tuple(combo)]
+            print(f"{combo} appears {count} time{'' if count == 1 else 's'}")
+            if counter[tuple(combo)] >= k:
+                good.append(combo)
+                out[tuple(combo)] = counter[tuple(combo)]
             else:
-                very_valid.append(combo)
+                bad.append(combo)
+        print()
 
-        print("Good: {}".format(very_valid))
-        valid = get_combo(m, very_valid)
+        print("Good: {}\n".format(good))
+        combos = get_combo(m, good)
+
+        valid = filter_valid(bad, combos)
+        print(f"New combos: {valid}\n")
     save(out)
-
-
-def save(out: dict):
-    f = open("output.txt", "w")
-    for key, value in out.items():
-        f.write("{} :  {}\n".format(str(key), str(value)))
-    f.close()
 
 
 def main():
