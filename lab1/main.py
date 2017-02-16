@@ -13,7 +13,7 @@ Map-Reduce алгоритм
 
 from random import randint
 
-from lab1.utils import *
+from utils_pack.printers import print_title
 from lab1.tasks.maximum import MaximumMapReduce
 from lab1.tasks.average import AverageMapReduce
 from lab1.tasks.unique import UniqueMapReduce
