@@ -1,4 +1,5 @@
 __init__.py
 .idea
-
+/lab3/datasets/*
+/lab3/descriptions
 labs.pdf

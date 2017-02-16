@@ -6,7 +6,7 @@ def print_title(title: str, length=89):
     print(f"{'#'*length}\n")
 
 
-def print_header(header: str):
-    print(f"+{'-'*77}\n"
+def print_header(header: str, length=88):
+    print(f"+{'-'*length}\n"
           f"| {header}\n"
-          f"+{'-'*77}\n")
+          f"+{'-'*length}\n")
