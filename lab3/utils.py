@@ -68,8 +68,16 @@ class Data(object):
                 test.append(row)
         return Data(list=train), Data(list=test)
 
-    def split_fair(self, ratio=0.7):
-        pass
+    def split_fairly(self, ratio=0.7):
+        train, test = [], []
+        groups = [[] for _ in range(self.classes_number)]
+        for row in self.__rows:
+            groups[row[-1]].append(row)
+        for group in groups:
+            limit = int(len(group) * ratio)
+            train += group[:limit]
+            test += group[limit:]
+        return Data(list=train), Data(list=test)
 
     def __len__(self):
         return len(self.__rows)

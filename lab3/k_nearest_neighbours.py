@@ -30,7 +30,3 @@ def evaluate(train, test, classes_number, neighbours_number):
     print(f"Macro f1-score: {macro_f1_score(confusion_matrix)}")
     print(f"Micro f1-score: {micro_f1_score(confusion_matrix)}")
     print()
-
-
-if __name__ == '__main__':
-    evaluate()
