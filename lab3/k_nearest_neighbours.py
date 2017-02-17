@@ -1,5 +1,6 @@
 import math
-from lab3.utils import *
+
+from lab3.utils import Data
 
 
 def euclid_dist(v1, v2):
@@ -10,7 +11,8 @@ def euclid_dist(v1, v2):
 
 def determine_class(train_set, test, k):
     distances = []
-    for features, clazz in train_set:
+    for row in train_set:
+        features, clazz = row[:-1], row[-1]
         dist = euclid_dist(features, test)
         distances.append((dist, clazz))
     distances.sort(key=lambda x: x[0])
@@ -18,15 +20,11 @@ def determine_class(train_set, test, k):
     return max(set(distances), key=distances.count)
 
 
-def evaluate(train, test, classes_number, neighbours_number):
-    confusion_matrix = [[0] * classes_number for _ in range(classes_number)]
+def evaluate(train: Data, test: Data, neighbours_number: int):
+    confusion_matrix = [[0] * train.classes_number for _ in range(train.classes_number)]
 
-    for features, clazz in test:
+    for row in test:
+        features, clazz = row[:-1], row[-1]
         prediction = determine_class(train, features, neighbours_number)
         confusion_matrix[clazz][prediction] += 1
-
-    print("Confusion Matrix:")
-    print("\n".join(map(str, confusion_matrix)))
-    print(f"Macro f1-score: {macro_f1_score(confusion_matrix)}")
-    print(f"Micro f1-score: {micro_f1_score(confusion_matrix)}")
-    print()
+    return confusion_matrix
