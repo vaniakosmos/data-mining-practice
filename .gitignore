@@ -1,5 +1,6 @@
 __init__.py
 .idea
 /lab3/data_sets/*
+/lab5/data/*
 normalizer.py
 labs.pdf

@@ -42,7 +42,7 @@ def leaf(group: Data):
     return max(set(ys), key=ys.count)
 
 
-def tree_split(node: dict, max_depth: int, min_size: float, depth: int):
+def tree_split(node: dict, max_depth: int, min_size: int, depth: int):
     left, right = node['groups']
     del (node['groups'])
 
@@ -71,7 +71,7 @@ def tree_split(node: dict, max_depth: int, min_size: float, depth: int):
         tree_split(node['right'], max_depth, min_size, depth + 1)
 
 
-def build_tree(data_set: Data, max_depth: int, min_size: float):
+def build_tree(data_set: Data, max_depth: int, min_size: int):
     root = get_split(data_set)
     tree_split(root, max_depth, min_size, 1)
     return root

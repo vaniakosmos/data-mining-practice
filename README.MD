@@ -14,12 +14,14 @@
 #### 3. Classification
 
 - decision tree
+- k-means
 - k-nearest neighbors algorithm
 
 
 #### 4. Clusterization
 
  - k-means
+ - k-nearest neighbors algorithm
 
 
 
