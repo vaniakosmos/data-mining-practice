@@ -15,11 +15,11 @@ def main():
     # data = get_data(file_name='./data/pyramid.data')
     data = get_data(file_name='./data/spiral.data')
 
-    clusters, centers = k_means(data, k=3)
+    clusters, centers = k_means(data, k=2)
     plot(clusters, centers, "k-means")
 
-    # clusters, centers = k_nearest_neighbours(data, k=2)
-    # plot(clusters, centers, "k-nearest-neighbours")
+    clusters, centers = k_nearest_neighbours(data, k=2)
+    plot(clusters, centers, "k-nearest-neighbours")
 
 
 if __name__ == '__main__':
