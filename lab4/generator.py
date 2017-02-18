@@ -73,8 +73,8 @@ def make_spiral(file_name='./data/spiral.data', show=False):
     file = open(file_name, 'w')
 
     heap = []
-    heap += spiral((-2, 0), 20, 4, clockwise=True, size=2000)
-    heap += spiral((2, 0), 20, 4, clockwise=False, size=2000)
+    heap += spiral((-1, 0), 10, 2, clockwise=True, size=500)
+    heap += spiral((1, 0), 10, 2, clockwise=False, size=500)
     save(heap, file)
     file.close()
 

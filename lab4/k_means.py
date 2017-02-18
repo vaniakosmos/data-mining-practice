@@ -1,12 +1,5 @@
 import random
-
-
-def euclid_dist(v1, v2):
-    return sum(map(lambda pair: pow(pair[0]-pair[1], 2), zip(v1, v2)))
-
-
-def dist(v1, v2):
-    return euclid_dist(v1, v2)
+from lab4.utils import dist
 
 
 def k_means(data: list, k=3):

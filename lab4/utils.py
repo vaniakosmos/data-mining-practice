@@ -2,10 +2,10 @@ from random import random
 import matplotlib.pyplot as plt
 
 
-def split(data):
+def split(data, x_index=0, y_index=1):
     xs, ys = [], []
-    for dot in data:
-        x, y = dot
+    for vector in data:
+        x, y = vector[x_index], vector[y_index]
         xs.append(x)
         ys.append(y)
     return xs, ys
@@ -25,7 +25,8 @@ def plot(clusters: list, centers: list, title=""):
         xs, ys = split(cluster)
         plt.plot(xs, ys, 'o', c=color)
 
-    plt.plot(*split(centers), 'x', c='black', markersize=10)
+    if centers is not None:
+        plt.plot(*split(centers), 'x', c='black', markersize=10)
     plt.title(title)
     plt.show()
 
@@ -35,3 +36,11 @@ def get_data(file_name='./data/pyramid.data'):
     for line in open(file_name, 'r'):
         data.append(eval(line))
     return data
+
+
+def euclid_dist(v1, v2):
+    return sum(map(lambda pair: pow(pair[0]-pair[1], 2), zip(v1, v2)))
+
+
+def dist(v1, v2):
+    return euclid_dist(v1, v2)
