@@ -13,7 +13,7 @@ def k_means(data: list, k=3):
     iterations = 0
 
     while changed:
-        print(f"Centers: [{', '.join(['(%.2f, %.2f)' % e for e in centers])}]")
+        # print(f"Centers: [{', '.join(['(%.2f, %.2f)' % e for e in centers])}]")
 
         iterations += 1
         changed = False
@@ -21,7 +21,7 @@ def k_means(data: list, k=3):
 
         distribute(data, k, clusters, centers)
 
-        reassign_centers(k, clusters, centers)
+        reassign_centers(clusters, centers)
 
         mask, changed = check_changes(mask, centers, changed)
 
@@ -31,22 +31,22 @@ def k_means(data: list, k=3):
 
 
 def distribute(data: iter, k: int, clusters: iter, centers: iter):
-    for dot in data:
+    for vector in data:
         chosen_cluster_id, min_dist = None, None
         for cluster_id in range(k):
-            d = dist(centers[cluster_id], dot)
+            d = dist(centers[cluster_id], vector)
             if min_dist is None or d < min_dist:
                 chosen_cluster_id = cluster_id
                 min_dist = d
-        clusters[chosen_cluster_id].append(dot)
+        clusters[chosen_cluster_id].append(vector)
 
 
-def reassign_centers(k: int, clusters: iter, centers: iter):
-    for i in range(k):
-        cluster = clusters[i]
-        sx = sum(e[0] for e in cluster) / len(cluster)
-        sy = sum(e[1] for e in cluster) / len(cluster)
-        centers[i] = sx, sy
+def reassign_centers(clusters: iter, centers: iter):
+    features_number = len(clusters[0][0])
+    for i, cluster in enumerate(clusters):
+        sum_vector = [sum(e[j] for e in cluster) for j in range(features_number)]
+        vector = [sum_vector[j] / len(cluster) for j in range(features_number)]
+        centers[i] = tuple(vector)
 
 
 def check_changes(mask: iter, centers: iter, changed: bool):

@@ -39,7 +39,7 @@ def get_data(file_name='./data/pyramid.data'):
 
 
 def euclid_dist(v1, v2):
-    return sum(map(lambda pair: pow(pair[0]-pair[1], 2), zip(v1, v2)))
+    return sum([pow(a-b, 2) for a, b in zip(v1, v2)])
 
 
 def dist(v1, v2):
