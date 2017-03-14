@@ -14,92 +14,91 @@ m – кількість об’єктів транзакцій (об’єкти
 """
 
 
-def get_data() -> (int, int, list):
-    ts = []
-    for i, line in enumerate(open("./data/input.txt").readlines()):
-        ts.append(list(map(int, line.split())))
-    m = ts.pop(0)[0]
-    k = ts.pop()[0]
+from typing import List, Dict, Tuple
+
+
+def get_data() -> (int, int, List[Tuple[int, ...]]):
+    with open('./data/input.txt', 'r') as file:
+        ts = []
+        for line in file:
+            nums = [int(s) for s in line.split()]
+            ts.append(nums)
+
+        m = ts.pop(0)[0]
+        k = ts.pop(0)[0]
+
+        ts = [vectorise(t, m) for t in ts]
     return m, k, ts
 
 
-def get_combo(m: int, ts: list) -> list:
-    out = []
-    for i in range(len(ts)):
-        ts[i] = list(ts[i])
-
-    for i in range(m):
-        for t in ts:
-            if i not in t:
-                out.append(set(t + [i]))
-
-    used = []
-    out = [x for x in out if x not in used and (used.append(x) or True)]
-    return out
+def vectorise(elements: List[int], max_elem: int) -> Tuple[int, ...]:
+    vec = [0] * max_elem
+    for e in elements:
+        vec[e] = 1
+    return tuple(vec)
 
 
-def count_combos(valid, ts):
-    counter = dict(zip(
-        [tuple(combo) for combo in valid],
-        [0]*len(valid)))
-    for combo in valid:
+def contains(where: Tuple[int, ...], what: Tuple[int, ...]) -> bool:
+    for i in range(len(what)):
+        if what[i] == 1 and where[i] != 1:
+            return False
+    return True
+
+
+def count_combos(combos: List[Tuple[int, ...]], ts: List[Tuple[int, ...]]) -> Dict[Tuple[int, ...], int]:
+    counter = dict()
+    for combo in combos:
         for transaction in ts:
             if contains(transaction, combo):
-                counter[tuple(combo)] += 1
+                counter[combo] = counter.get(combo, 0) + 1
     return counter
 
 
-def contains(where, what):
-    yes = True
-    for e in what:
-        yes = yes and (e in where)
-    return yes
+def filter_out(counter: Dict[Tuple[int, ...], int], k: int) -> List[Tuple[int, ...]]:
+    combos = []
+    for combo, count in counter.items():
+        print(f"{combo} appears {count} time{'' if count == 1 else 's'}")
+        if count >= k:
+            combos.append(combo)
+    print()
+    return combos
 
 
-def filter_valid(bad, combos) -> list:
-    valid = []
-    for combo in combos:
-        ok = True
-        for b in bad:
-            ok = ok and not contains(what=b, where=combo)
-        if ok:
-            valid.append(combo)
-    return valid
+def contains_enough_valid(combo: Tuple[int, ...], valid_combos: List[Tuple[int, ...]]) -> bool:
+    n = sum(combo)
+    for c in valid_combos:
+        if contains(combo, c):
+            n -= 1
+        if n == 0:
+            break
+    return n == 0
 
 
-def save(out: dict):
-    f = open("./data/output.txt", "w")
-    for key, value in out.items():
-        f.write(f"{key} :  {value}\n")
-    f.close()
+def level_up_combos(valid_combos: List[Tuple[int, ...]], max_elem: int) -> List[Tuple[int, ...]]:
+    out = set()
+    for combo in valid_combos:
+        for i in range(max_elem):
+            if combo[i] == 0:
+                new_combo = list(combo)
+                new_combo[i] = 1
+                new_combo = tuple(new_combo)
+                if contains_enough_valid(new_combo, valid_combos):
+                    out.add(new_combo)
+    return list(out)
 
 
-def apriori(m: int, k: int, ts: list):
-    out = dict()
-    valid = [{e} for e in range(m)]
-    while len(valid) != 0:
-        counter = count_combos(valid, ts)
+def apriori(m: int, k: int, ts: List[Tuple[int, ...]]):
+    combos = [vectorise([e], m) for e in range(m)]
 
-        # add if only over threshold
-        good = []
-        bad = []
-        for i in range(len(valid)):
-            combo = valid[i]
-            count = counter[tuple(combo)]
-            print(f"{combo} appears {count} time{'' if count == 1 else 's'}")
-            if counter[tuple(combo)] >= k:
-                good.append(combo)
-                out[tuple(combo)] = counter[tuple(combo)]
-            else:
-                bad.append(combo)
-        print()
+    while len(combos) != 0:
+        print('= ' * 50)
+        counters = count_combos(combos, ts)
 
-        print("Good: {}\n".format(good))
-        combos = get_combo(m, good)
+        valid = filter_out(counters, k)
+        print("Valid combos: \n{}\n".format('\n'.join(map(str, valid))))
 
-        valid = filter_valid(bad, combos)
-        print(f"New combos: {valid}\n")
-    save(out)
+        combos = level_up_combos(valid, m)
+        print("New combos: \n{}\n".format('\n'.join(map(str, combos))))
 
 
 def main():
