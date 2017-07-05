@@ -36,7 +36,7 @@ def build_vocabulary(data: list):
             if word not in vocabulary:
                 vocabulary[word] = (0, 0)
 
-        if message['class'] == 'spam':
+        if message['class'] == '3':
             spam_number += 1
             for word in message['text']:
                 s, a = vocabulary[word]
@@ -82,8 +82,27 @@ def evaluate(voc: dict, test: list, spam_prob: float):
     print(f"F1-score: {f1_score(tp, fp, fn)}\n")
 
 
+def get_data2():
+    train = []
+    test = []
+
+    with open('./data/train.txt') as file:
+        for line in file:
+            words = line.strip().split()
+            train.append({'class': words[0], 'text': words[1:]})
+
+    with open('./data/test.txt') as file:
+        for line in file:
+            words = line.strip().split()
+            test.append({'class': words[0], 'text': words[1:]})
+
+    return train, test
+
+
 def main():
-    train, test = split(get_data(), ratio=0.1)
+    # train, test = split(get_data(), ratio=0.9)
+    train, test = get_data2()
+    # print(test)
 
     vocabulary, spam_prob = build_vocabulary(train)
 
