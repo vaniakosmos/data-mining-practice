@@ -15,8 +15,8 @@ Practical works for university course "Data Mining"
     - k-means ([wat?](#k-means-approach-in-classification))
     - k-nearest neighbors algorithm
 4. Clusterization
- - k-means
- - k-nearest neighbors algorithm ([wat?](#k-nearest-neighbours-approach-in-clusterisation))
+    - k-means
+    - k-nearest neighbors algorithm ([wat?](#k-nearest-neighbours-approach-in-clusterisation))
 5. Text Mining
     - Naive Bayes Classifier for sms spam
 6. [Project](https://github.com/vaniakosmos/gender-recognition-by-voice)
